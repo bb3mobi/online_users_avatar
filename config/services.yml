@@ -1,0 +1,7 @@
+services:
+    bb3mobi.online_users_avatar.listener:
+        class: bb3mobi\online_users_avatar\event\listener
+        arguments:
+            - @user
+        tags:
+            - { name: event.listener }
