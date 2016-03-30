@@ -92,22 +92,33 @@ class listener implements EventSubscriberInterface
 
 		/** Вариант 1 */
 		$online_userlist = $event['online_userlist'];
+
+		$to = $replace = array();
 		foreach ($event['rowset'] as $row)
 		{
 			if (!isset($u_online[$row['user_id']]))
 			{
 				continue;
 			}
+
 			$replace_avatar = '<span title="' . $row['username'] . '">' . $this->a_img($row) .  '</span>';
+
 			if (isset($online_users['hidden_users'][$row['user_id']]))
 			{
 				$row['username'] = '<em>' . $row['username'] . '</em>';
 			}
-			// Заменяем имя пользователя на изображение аватара
-			$online_userlist = str_replace($row['username'], $replace_avatar, $online_userlist);
+
+			$to[] = $row['username'];
+			$replace[] = $replace_avatar;
 		}
-		$online_userlist = str_replace(',', '', $online_userlist); // Запятые под снос..
-		$online_userlist = str_replace($this->user->lang['REGISTERED_USERS'], '', $online_userlist);
+
+		if (sizeof($to))
+		{
+			// Заменяем имя пользователя на изображение аватара
+			$online_userlist = str_replace($to, $replace, $online_userlist);
+			// Зарегистрированные пользователи и запятые под снос..
+			$online_userlist = str_replace(array($this->user->lang['REGISTERED_USERS'], ','), '', $online_userlist);
+		}
 
 		/** Вариант 2 */
 		/*
