@@ -148,14 +148,21 @@ class listener implements EventSubscriberInterface
 	{
 		if (!empty($avatar['user_avatar']))
 		{
-			// Выравниваем по высоте
-			$avatar['user_avatar_width'] = round(40/$avatar['user_avatar_height']*$avatar['user_avatar_width']);
+			if ($avatar['user_avatar_height'] && $avatar['user_avatar_width'])
+			{
+				// Выравниваем по высоте
+				$avatar['user_avatar_width'] = round(40/$avatar['user_avatar_height']*$avatar['user_avatar_width']);
+			}
+			else
+			{
+				$avatar['user_avatar_width'] = 40;
+			}
 			$avatar['user_avatar_height'] = 40;
 
 			return phpbb_get_user_avatar($avatar);
 		}
 
-		$theme = generate_board_url() . "/styles/" . rawurlencode($this->user->style['style_path']) . '/theme';
-		return '<img class="avatar" src="' . $theme . '/images/no_avatar.gif" width="40" height="40" alt="" />';
+		$no_avatar = generate_board_url() . "/styles/" . rawurlencode($this->user->style['style_path']) . '/theme/images/no_avatar.gif';
+		return '<img class="avatar" src="' . $no_avatar . '" width="40" height="40" alt="" />';
 	}
 }
